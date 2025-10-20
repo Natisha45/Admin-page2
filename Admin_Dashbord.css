@@ -1,0 +1,30 @@
+/* Minimal Admin Time Management styles */
+:root{--bg:#ffffff;--muted:#6b7280;--accent:#1f2937}
+*{box-sizing:border-box}
+body{font-family:Inter, Roboto, Arial, sans-serif;margin:0;background:var(--bg);color:#111}
+.top{background:#fff;padding:18px 28px;border-bottom:1px solid #eee}
+.brand{font-size:22px;font-weight:700}
+.container{max-width:1200px;margin:28px auto;padding:0 24px}
+.tasks-row{display:flex;gap:40px;justify-content:space-between;margin-bottom:36px}
+.task-card{flex:1;background:#f1f5f9;padding:22px;border-radius:6px;text-align:center}
+.task-card h4{margin:0 0 12px;font-size:14px}
+.task-info{font-size:12px;color:var(--muted);margin-bottom:18px}
+.task-time{background:#e2e8f0;padding:18px;border-radius:4px;font-weight:600}
+
+.timer-area{display:flex;justify-content:center;margin-bottom:36px}
+.timer-box{background:#e9eef6;padding:34px 18px;border-radius:6px;width:80%;text-align:center}
+.big-timer{font-size:28px;font-weight:700;margin-bottom:14px}
+.controls .btn{margin:0 8px;padding:8px 16px;border-radius:6px;border:none;cursor:pointer}
+.btn.start{background:#22c55e;color:#fff}
+.btn.pause{background:#f97316;color:#fff}
+.btn.complete{background:#0ea5e9;color:#fff}
+.export-wrap{display:flex;justify-content:flex-start;padding-left:40px}
+.report-label{align-self:center;margin-right:8px;color:#6b7280}
+.report-by{padding:8px;border-radius:6px;border:1px solid #e5e7eb;margin-right:12px}
+.btn.export{background:#e2e8f0;border-radius:999px;padding:12px 28px;border:none}
+
+@media (max-width:900px){
+	.tasks-row{flex-direction:column}
+	.timer-box{width:100%}
+}
+
