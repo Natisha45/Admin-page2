@@ -1,6 +1,6 @@
 // Admin Time Management - minimal
 document.addEventListener('DOMContentLoaded', () => {
-	const actorKeys = ['agent','branch','sales'];
+	// actorKeys will be derived from state so new sections can be added dynamically
 	const actorMap = { agent: 'Agent Creation', branch: 'Branch Creation', sales: 'Sales Creation' };
 
 	const bigTimer = document.getElementById('bigTimer');
@@ -20,17 +20,110 @@ document.addEventListener('DOMContentLoaded', () => {
 	function save(){ localStorage.setItem('tm_state', JSON.stringify(state)); }
 	function load(){ try{return JSON.parse(localStorage.getItem('tm_state')||'null')}catch(e){return null} }
 
+	// activity helpers
+	function addActivity(actorKey, action, durationMs){
+		state.activities = state.activities || [];
+		state.activities.unshift({ time: new Date().toISOString(), actor: actorKey, action, duration: durationMs||0 });
+		// keep last 50
+		if(state.activities.length>50) state.activities.length=50;
+		save();
+		renderActivities();
+	}
+
+	function renderActivities(){
+		const tbody = document.querySelector('#recentActivities tbody');
+		if(!tbody) return;
+		tbody.innerHTML = '';
+		(state.activities||[]).forEach(row => {
+			const tr = document.createElement('tr');
+			const timeTd = document.createElement('td'); timeTd.textContent = new Date(row.time).toLocaleString(); tr.appendChild(timeTd);
+			const actorTd = document.createElement('td'); actorTd.textContent = state.actors[row.actor] ? state.actors[row.actor].name : row.actor; tr.appendChild(actorTd);
+			const actionTd = document.createElement('td'); actionTd.textContent = row.action; tr.appendChild(actionTd);
+			const durTd = document.createElement('td'); durTd.textContent = row.duration ? fmt(row.duration) : '-'; tr.appendChild(durTd);
+			tbody.appendChild(tr);
+		});
+	}
+
 	function fmt(ms){ const s=Math.max(0,Math.floor(ms/1000)); const h=Math.floor(s/3600).toString().padStart(2,'0'); const m=Math.floor((s%3600)/60).toString().padStart(2,'0'); const sec=(s%60).toString().padStart(2,'0'); return `${h}:${m}:${sec}` }
 
-	function renderActors(){ actorKeys.forEach(k=>{ const el = document.querySelector(`[data-key="${k}"]`); const tEl = document.getElementById('time-'+k); const a=state.actors[k]; const time = a.taskStart ? a.taskAccum + (Date.now()-a.taskStart) : a.taskAccum; tEl.textContent = a.done ? fmt(a.taskAccum) : fmt(time); el.classList.toggle('selected', state.selected===k); }) }
+	function getActorKeys(){ return Object.keys(state.actors); }
+
+	function renderActors(){
+		const keys = getActorKeys();
+		keys.forEach(k=>{
+			const el = document.querySelector(`[data-key="${k}"]`);
+			const tEl = document.getElementById('time-'+k);
+			const a = state.actors[k];
+			const time = a.taskStart ? a.taskAccum + (Date.now()-a.taskStart) : a.taskAccum;
+			if(tEl) tEl.textContent = a.done ? fmt(a.taskAccum) : fmt(time);
+			if(el) el.classList.toggle('selected', state.selected===k);
+		})
+	}
 
 	function update(){ const a = state.actors[state.selected]; const time = a.taskStart ? a.taskAccum + (Date.now()-a.taskStart) : a.taskAccum; bigTimer.textContent = fmt(time); renderActors(); }
 
-	function start(){ const a=state.actors[state.selected]; if(!a.taskStart) a.taskStart = Date.now(); if(!interval) interval=setInterval(update,250); save(); }
-	function pause(){ const a=state.actors[state.selected]; if(a.taskStart){ a.taskAccum += Date.now()-a.taskStart; a.taskStart=null; } if(interval){ clearInterval(interval); interval=null } save(); update(); }
-	function complete(){ const a=state.actors[state.selected]; if(a.taskStart){ a.taskAccum += Date.now()-a.taskStart; a.taskStart=null } a.done=true; save(); update(); }
+	function start(){ const a=state.actors[state.selected]; if(!a.taskStart) { a.taskStart = Date.now(); addActivity(state.selected,'Start'); } if(!interval) interval=setInterval(update,250); save(); }
+	function pause(){ const a=state.actors[state.selected]; if(a.taskStart){ const dur = Date.now()-a.taskStart; a.taskAccum += dur; a.taskStart=null; addActivity(state.selected,'Pause',dur); } if(interval){ clearInterval(interval); interval=null } save(); update(); }
+	function complete(){
+		const a = state.actors[state.selected];
+		let dur = 0;
+		if(a.taskStart){ dur = Date.now()-a.taskStart; a.taskAccum += dur; a.taskStart = null }
+		a.done = true;
+		addActivity(state.selected,'Complete',dur);
+		// start next actor in order, if any
+		const keys = getActorKeys();
+		const idx = keys.indexOf(state.selected);
+		const next = (idx >= 0 && idx < keys.length - 1) ? keys[idx+1] : null;
+		if(next){
+			state.selected = next;
+			state.actors[next].taskStart = Date.now();
+			addActivity(next,'Start',0);
+		} else {
+			// no next - stop interval
+			if(interval){ clearInterval(interval); interval=null }
+		}
+		save(); renderActors(); update();
+	}
+
+	// Reset the currently selected actor: clear timings and mark not done
+	function resetSection(){ const key = state.selected; const a = state.actors[key]; if(!a) return; a.taskStart = null; a.taskAccum = 0; a.done = false; addActivity(key,'Reset'); save(); renderActors(); update(); }
+
+	// Start a new section: reset tasks and start only the first one so tasks run sequentially
+	function addSection(name){
+		if(!name || !name.trim()) return;
+		const sectionName = name.trim();
+		state.currentSection = sectionName;
+		const now = Date.now();
+		// Reset all existing actors
+		const keys = getActorKeys();
+		keys.forEach(k=>{
+			const a = state.actors[k];
+			a.taskStart = null;
+			a.taskAccum = 0;
+			a.done = false;
+		});
+		// Start only the first actor in order
+		const first = keys[0];
+		if(first){
+			state.selected = first;
+			state.actors[first].taskStart = now;
+			addActivity(first,'Section Start',0);
+		}
+		// ensure update loop is running
+		if(!interval) interval = setInterval(update,250);
+		save(); renderActors(); update();
+	}
 
 	startBtn.addEventListener('click', start); pauseBtn.addEventListener('click', pause); completeBtn.addEventListener('click', complete);
+
+	// Reset and Add Section buttons
+	const resetBtn = document.getElementById('resetBtn');
+	if(resetBtn) resetBtn.addEventListener('click', resetSection);
+
+	const addSectionBtn = document.getElementById('addSectionBtn');
+	if(addSectionBtn){ addSectionBtn.addEventListener('click', ()=>{
+		const input = document.getElementById('newSectionName'); if(!input) return; const name = input.value; if(!name.trim()) return alert('Enter a name for the new section'); addSection(name); input.value='';
+	}) }
 
 	exportBtn.addEventListener('click', async () => {
 		try {
@@ -48,7 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			const meta = document.createElement('div');
 			meta.style.marginBottom = '8px';
-			meta.textContent = `Ordered by: ${reportBy}    Date: ${new Date().toLocaleString()}`;
+			const sectionLabel = state.currentSection ? `Section: ${state.currentSection}    ` : '';
+			meta.textContent = `${sectionLabel}Ordered by: ${reportBy}    Date: ${new Date().toLocaleString()}`;
 			report.appendChild(meta);
 
 			const table = document.createElement('table');
@@ -68,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			table.appendChild(thead);
 
 			const tbody = document.createElement('tbody');
-			actorKeys.forEach(k => {
+			getActorKeys().forEach(k => {
 				const a = state.actors[k];
 				const tr = document.createElement('tr');
 				const status = a.done ? 'Completed' : (a.taskStart ? 'In Progress' : 'Not started');
@@ -108,13 +202,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	// wire actor selection
+	// wire existing actor selection
 	document.querySelectorAll('.task-card').forEach(card => {
 		const key = card.dataset.key;
 		card.addEventListener('click', () => { state.selected = key; renderActors(); update(); });
 	});
 
 	// initial render
-	renderActors(); update();
+	renderActors(); update(); renderActivities();
 });
 

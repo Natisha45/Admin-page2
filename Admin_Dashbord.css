@@ -7,6 +7,8 @@ body{font-family:Inter, Roboto, Arial, sans-serif;margin:0;background:var(--bg);
 .container{max-width:1200px;margin:28px auto;padding:0 24px}
 .tasks-row{display:flex;gap:40px;justify-content:space-between;margin-bottom:36px}
 .task-card{flex:1;background:#f1f5f9;padding:22px;border-radius:6px;text-align:center}
+.task-card{position:relative}
+.badge{position:absolute;left:12px;top:12px;background:#e2e8f0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
 .task-card h4{margin:0 0 12px;font-size:14px}
 .task-info{font-size:12px;color:var(--muted);margin-bottom:18px}
 .task-time{background:#e2e8f0;padding:18px;border-radius:4px;font-weight:600}
@@ -18,10 +20,20 @@ body{font-family:Inter, Roboto, Arial, sans-serif;margin:0;background:var(--bg);
 .btn.start{background:#22c55e;color:#fff}
 .btn.pause{background:#f97316;color:#fff}
 .btn.complete{background:#0ea5e9;color:#fff}
+.controls .reset{background:#6c757d;color:#fff}
 .export-wrap{display:flex;justify-content:flex-start;padding-left:40px}
+#recentActivities{margin-top:18px}
+.activities{margin-top:30px}
+.activities-table{width:100%;border-collapse:collapse}
+.activities-table th,.activities-table td{border:1px solid #e6e9ef;padding:8px;text-align:left}
+.activities-table tbody tr:nth-child(odd){background:#fbfdff}
 .report-label{align-self:center;margin-right:8px;color:#6b7280}
 .report-by{padding:8px;border-radius:6px;border:1px solid #e5e7eb;margin-right:12px}
 .btn.export{background:#e2e8f0;border-radius:999px;padding:12px 28px;border:none}
+
+.add-section{margin:12px 0;display:flex;gap:8px;align-items:center;padding-left:40px}
+.add-section input{padding:8px;border:1px solid #e5e7eb;border-radius:6px;min-width:240px}
+.btn.add{background:#06b6d4;color:#fff;border:none;padding:8px 12px;border-radius:6px}
 
 @media (max-width:900px){
 	.tasks-row{flex-direction:column}

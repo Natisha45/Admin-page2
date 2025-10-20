@@ -16,24 +16,27 @@
 	</header>
 
 	<main class="container">
-		<section class="tasks-row">
-			<div class="task-card" data-key="agent">
-				<h4>Agent Creation</h4>
-				<div class="task-info">display the time it took to finish this job</div>
-				<div class="task-time" id="time-agent">--:--:--</div>
-			</div>
+		<section class="tasks-row" id="tasksContainer">
+				<div class="task-card" data-key="agent">
+					<div class="badge">A</div>
+					<h4>Agent Creation</h4>
+					<div class="task-info">display the time it took to finish this job</div>
+					<div class="task-time" id="time-agent">--:--:--</div>
+				</div>
 
-			<div class="task-card" data-key="branch">
-				<h4>Branch Creation</h4>
-				<div class="task-info">display the time it took to finish this job</div>
-				<div class="task-time" id="time-branch">--:--:--</div>
-			</div>
+					<div class="task-card" data-key="branch">
+						<div class="badge">B</div>
+						<h4>Branch Creation</h4>
+						<div class="task-info">display the time it took to finish this job</div>
+						<div class="task-time" id="time-branch">--:--:--</div>
+					</div>
 
-			<div class="task-card" data-key="sales">
-				<h4>Sales Creation and Installation</h4>
-				<div class="task-info">display the time it took to finish this job</div>
-				<div class="task-time" id="time-sales">--:--:--</div>
-			</div>
+					<div class="task-card" data-key="sales">
+						<div class="badge">C</div>
+						<h4>Sales Creation and Installation</h4>
+						<div class="task-info">display the time it took to finish this job</div>
+						<div class="task-time" id="time-sales">--:--:--</div>
+					</div>
 		</section>
 
 		<section class="timer-area">
@@ -43,6 +46,7 @@
 					<button id="startBtn" class="btn start">Start</button>
 					<button id="pauseBtn" class="btn pause">Pause</button>
 					<button id="completeBtn" class="btn complete">Complete</button>
+					<button id="resetBtn" class="btn reset">Reset</button>
 				</div>
 			</div>
 		</section>
@@ -52,6 +56,19 @@
 				<input id="reportBy" class="report-by" placeholder="Name or department" />
 				<button id="exportBtn" class="btn export">Export</button>
 		</div>
+
+		<div class="add-section">
+			<input id="newSectionName" placeholder="Start new section/session (e.g. Reconciliation)" />
+			<button id="addSectionBtn" class="btn add">Start Section</button>
+		</div>
+
+			<section class="activities">
+				<h3>Recent Activities</h3>
+				<table id="recentActivities" class="activities-table">
+					<thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Duration</th></tr></thead>
+					<tbody></tbody>
+				</table>
+			</section>
 	</main>
 </body>
 </html>
