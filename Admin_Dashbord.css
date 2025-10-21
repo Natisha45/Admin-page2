@@ -1,5 +1,5 @@
 /* Minimal Admin Time Management styles */
-:root{--bg:#ffffff;--muted:#6b7280;--accent:#1f2937}
+:root{--bg:#cdcdd6;--muted:#6b7280;--accent:#1f2937}
 *{box-sizing:border-box}
 body{font-family:Inter, Roboto, Arial, sans-serif;margin:0;background:var(--bg);color:#111}
 .top{background:#fff;padding:18px 28px;border-bottom:1px solid #eee}
