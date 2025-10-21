@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: url('Untitled design.png') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background: linear-gradient(135deg, rgba(72,61,139,0.85) 0%, rgba(52,152,219,0.85) 100%);
+            backdrop-filter: blur(2px);
+            padding: 2rem 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            width: 320px;
+        }
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #0a0909;
+            font-size: xx-large;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #020202;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-container button:hover {
+            background: #8429b9;
+        }
+        .login-container .signup-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #02080c;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .login-container .signup-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+    <h1 id="mainHeading">Welcome</h1>
+    <form>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+        <a href="#" class="signup-link" id="signupLink">Don't have an account? Sign up</a>
+        <div id="signupForm" style="display:none; margin-top:1.5rem;">
+            <h1>Ready To Make Memories?</h1>
+            <form>
+                <label for="newUsername">Username</label>
+                <input type="text" id="newUsername" name="newUsername" required>
+                <label for="newPassword">Password</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <a href="#" id="backToLogin" style="display:block; text-align:center; margin-top:1rem; color:#02080c; text-decoration:none; font-size:0.95rem;">Back to Login</a>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('signupLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector('.login-container form').style.display = 'none';
+    document.getElementById('signupLink').style.display = 'none';
+    document.getElementById('signupForm').style.display = 'block';
+    document.getElementById('mainHeading').style.display = 'none';
+});
+document.getElementById('backToLogin').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector('.login-container form').style.display = 'block';
+    document.getElementById('signupLink').style.display = 'block';
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('mainHeading').style.display = 'block';
+});
+
+// Redirect or show view after login
+document.querySelector('.login-container form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Set login state
+    localStorage.setItem('loggedIn', 'true');
+    window.location.href = 'Home.html';
+
+    // Example: redirect to dashboard.html
+    window.location.href = 'Home.html';
+    // Or, for role-based view, use:
+    // var username = document.getElementById('username').value;
+    // if(username === 'admin') {
+    //     window.location.href = 'admin.html';
+    // } else {
+    //     window.location.href = 'user.html';
+    // }
+});
+
+// Redirect after signup
+       document.querySelector('#signupForm form').addEventListener('submit', function(e) {
+           e.preventDefault();
+           var password = document.getElementById('newPassword').value;
+           var confirm = document.getElementById('confirmPassword').value;
+           if(password !== confirm) {
+               alert('Passwords do not match!');
+               return;
+           }
+           // Example: redirect to welcome.html
+           window.location.href = 'Home.html';
+       });
+</script>
+</body>
+</html>
