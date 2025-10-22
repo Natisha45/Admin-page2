@@ -13,6 +13,11 @@
 <body>
 	<header class="top">
 		<div class="brand"><img src="logo.png" alt="Smartbet"></div>
+		<!-- Logout Button with Image -->
+<button id="logoutBtn" style="background: none; border: none; cursor: pointer;">
+    <img src="https://img.icons8.com/?size=100&id=2444&format=png&color=000000" alt="Logout" width="30" height="30">
+</button>
+
 	</header>
 
 	<main class="container">
@@ -70,6 +75,16 @@
 				</table>
 			</section>
 	</main>
+	<script>
+    document.getElementById('logoutBtn').addEventListener('click', function () {
+        // Clear login state
+        localStorage.removeItem('loggedIn');
+
+        // Optional: redirect to login page
+        window.location.href = 'index.html'; // Change to your actual login page
+    });
+</script>
+
 </body>
 </html>
 
