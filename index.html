@@ -82,68 +82,27 @@
 
             <button type="submit">Login</button>
         </form>
-        <a href="#" class="signup-link" id="signupLink">Don't have an account? Sign up</a>
-        <div id="signupForm" style="display:none; margin-top:1.5rem;">
-            <h1>Ready To Make Memories?</h1>
-            <form>
-                <label for="newUsername">Username</label>
-                <input type="text" id="newUsername" name="newUsername" required>
-                <label for="newPassword">Password</label>
-                <input type="password" id="newPassword" name="newPassword" required>
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-                <button type="submit">Sign Up</button>
-            </form>
-            <a href="#" id="backToLogin" style="display:block; text-align:center; margin-top:1rem; color:#02080c; text-decoration:none; font-size:0.95rem;">Back to Login</a>
-        </div>
-    </div>
-</div>
+     
 <script>
-document.getElementById('signupLink').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.querySelector('.login-container form').style.display = 'none';
-    document.getElementById('signupLink').style.display = 'none';
-    document.getElementById('signupForm').style.display = 'block';
-    document.getElementById('mainHeading').style.display = 'none';
-});
-document.getElementById('backToLogin').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.querySelector('.login-container form').style.display = 'block';
-    document.getElementById('signupLink').style.display = 'block';
-    document.getElementById('signupForm').style.display = 'none';
-    document.getElementById('mainHeading').style.display = 'block';
-});
 
-// Redirect or show view after login
 document.querySelector('.login-container form').addEventListener('submit', function(e) {
     e.preventDefault();
-    // Set login state
-    localStorage.setItem('loggedIn', 'true');
-    window.location.href = 'Admin_Dashbord.html';
+   
+    var username = document.getElementById('username').value.trim();
+    var password = document.getElementById('password').value;
 
-    // Example: redirect to dashboard.html
-    window.location.href = 'Admin_Dashbord.html';
-    // Or, for role-based view, use:
-    // var username = document.getElementById('username').value;
-    // if(username === 'admin') {
-    //     window.location.href = 'admin.html';
-    // } else {
-    //     window.location.href = 'user.html';
-    // }
+    if(!username || !password){
+        alert('Please enter both username and password.');
+        return;
+    }
+    if(username === 'admin' && password === 'admin123'){
+        localStorage.setItem('loggedIn', 'true');
+        window.location.href = 'Admin_Dashbord.html';
+    } else {
+        alert('Invalid username or password. Please try again.');
+    }
 });
 
-// Redirect after signup
-       document.querySelector('#signupForm form').addEventListener('submit', function(e) {
-           e.preventDefault();
-           var password = document.getElementById('newPassword').value;
-           var confirm = document.getElementById('confirmPassword').value;
-           if(password !== confirm) {
-               alert('Passwords do not match!');
-               return;
-           }
-           // Example: redirect to welcome.html
-           window.location.href = 'Admin_Dashbord.html';
-       });
 </script>
 </body>
 </html>
